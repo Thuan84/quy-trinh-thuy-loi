@@ -5,311 +5,363 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quy trình thủy lợi 2026</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F3F4F6; min-height: 100vh; padding: 24px 16px 40px; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f0f2f5;
+  min-height: 100vh;
+  padding: 32px 16px 48px;
+}
+.page-header { max-width: 760px; margin: 0 auto 24px; text-align: center; }
+.page-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #fff1f1; color: #B91C1C;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 20px; margin-bottom: 12px;
+}
+.page-badge svg { width: 12px; height: 12px; }
+.page-title { color: #111827; font-size: 16px; font-weight: 700; line-height: 1.6; margin-bottom: 6px; }
+.page-title span { color: #DC2626; }
+.page-sub { color: #9CA3AF; font-size: 12px; }
 
-  .page-title { text-align: center; color: #B91C1C; font-size: 15px; font-weight: 700; margin-bottom: 6px; line-height: 1.5; max-width: 720px; margin-left: auto; margin-right: auto; }
-  .page-sub { text-align: center; color: #6B7280; font-size: 13px; margin-bottom: 20px; }
+.main-card {
+  max-width: 760px; margin: 0 auto;
+  background: #fff; border-radius: 20px; overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.04);
+}
 
-  /* GROUP TABS */
-  .group-tabs { display: flex; gap: 8px; justify-content: center; margin-bottom: 14px; }
-  .gtab { padding: 7px 18px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1.5px solid #E5E7EB; background: #fff; color: #6B7280; transition: all 0.2s; }
-  .gtab.active { background: #B91C1C; color: #fff; border-color: #B91C1C; }
+/* GROUP TABS */
+.group-bar { display: flex; background: #fafafa; border-bottom: 1px solid #f0f0f0; }
+.gtab {
+  flex: 1; padding: 14px 12px; text-align: center;
+  font-size: 13px; font-weight: 500; color: #9CA3AF;
+  cursor: pointer; transition: all 0.2s;
+  border-bottom: 2.5px solid transparent; user-select: none;
+}
+.gtab.active { color: #B91C1C; border-bottom-color: #DC2626; background: #fff; }
+.gtab:hover:not(.active) { color: #6B7280; background: #f5f5f5; }
 
-  /* WORKFLOW MENU */
-  .menu-wrap { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 18px; }
-  .menu-btn { padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; border: 1px solid #E5E7EB; background: #fff; color: #6B7280; transition: all 0.2s; white-space: nowrap; }
-  .menu-btn.active { background: #FEE2E2; color: #B91C1C; border-color: #FECACA; font-weight: 600; }
-  .menu-btn:hover { border-color: #FECACA; color: #B91C1C; }
+/* FLOW MENU */
+.flow-bar {
+  display: flex; gap: 6px; padding: 14px 20px;
+  border-bottom: 1px solid #f5f5f5; flex-wrap: wrap;
+}
+.flow-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 500;
+  cursor: pointer; border: 1.5px solid #E5E7EB; background: #fff; color: #6B7280;
+  transition: all 0.18s; user-select: none;
+}
+.flow-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+.flow-btn.active { background: #DC2626; color: #fff; border-color: #DC2626; }
+.flow-btn:hover:not(.active) { border-color: #FECACA; color: #B91C1C; }
 
-  /* CARD */
-  .wrap { background: #fff; border-radius: 16px; padding: 22px 24px 24px; max-width: 720px; margin: 0 auto; border: 1px solid #F3F4F6; }
-  .hdr { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
-  .hdr-icon { width: 38px; height: 38px; background: #FEE2E2; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .hdr-icon svg { width: 18px; height: 18px; }
-  .hdr-title { color: #B91C1C; font-weight: 600; font-size: 15px; line-height: 1.4; }
+/* HEADER */
+.wf-title-bar { padding: 20px 24px 0; display: flex; align-items: center; gap: 12px; }
+.wf-icon {
+  width: 38px; height: 38px; background: #FEF2F2; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.wf-icon svg { width: 18px; height: 18px; }
+.wf-title { font-size: 14px; font-weight: 700; color: #111827; line-height: 1.4; }
 
-  /* TIMELINE */
-  .timeline-wrap { position: relative; padding: 0 16px; }
-  .track-bg { position: absolute; top: 36px; left: calc(16px + 18px); right: calc(16px + 18px); height: 2px; background: #E5E7EB; border-radius: 2px; }
-  .track-fill { position: absolute; top: 36px; left: calc(16px + 18px); right: calc(16px + 18px); height: 2px; background: transparent; border-radius: 2px; overflow: hidden; }
-  .track-fill-inner { height: 100%; background: #DC2626; border-radius: 2px; width: 0%; transition: width 0.7s cubic-bezier(0.4,0,0.2,1); }
-  .steps-row { display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 1; }
-  .step { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; cursor: pointer; user-select: none; }
-  .step-num { font-size: 12px; color: #9CA3AF; font-weight: 500; height: 18px; line-height: 18px; transition: color 0.3s; }
-  .step-dot-wrap { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; }
-  .step-dot { width: 14px; height: 14px; border-radius: 50%; background: #D1D5DB; transition: all 0.4s ease; }
-  .step.active .step-dot { background: #DC2626; width: 22px; height: 22px; box-shadow: 0 0 0 6px #FECACA; }
-  .step.done .step-dot { background: #DC2626; width: 16px; height: 16px; box-shadow: none; }
-  .step-lbl { font-size: 11px; color: #9CA3AF; text-align: center; line-height: 1.4; max-width: 90px; transition: color 0.3s; }
-  .step.active .step-lbl, .step.done .step-lbl { color: #DC2626; }
-  .step.active .step-num, .step.done .step-num { color: #DC2626; font-weight: 600; }
+/* TIMELINE */
+.timeline-wrap { position: relative; padding: 20px 28px 6px; }
+.track-bg {
+  position: absolute; top: 39px;
+  left: calc(28px + 20px); right: calc(28px + 20px);
+  height: 3px; background: #F3F4F6; border-radius: 3px;
+}
+.track-fill {
+  position: absolute; top: 39px;
+  left: calc(28px + 20px); right: calc(28px + 20px);
+  height: 3px; overflow: hidden; border-radius: 3px;
+}
+.track-fill-inner { height: 100%; background: #DC2626; border-radius: 3px; width: 0%; }
+.steps-row { display: flex; justify-content: space-between; position: relative; z-index: 1; }
+.step { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; cursor: pointer; user-select: none; }
+.step-num { font-size: 11px; color: #D1D5DB; font-weight: 600; height: 16px; line-height: 16px; letter-spacing: 0.04em; transition: color 0.3s; }
+.step-dot-wrap { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+.step-dot {
+  width: 12px; height: 12px; border-radius: 50%; background: #E5E7EB;
+  transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+.step.active .step-dot { background: #DC2626; width: 20px; height: 20px; box-shadow: 0 0 0 5px #FECACA, 0 0 0 9px #FEF2F2; }
+.step.done .step-dot { background: #DC2626; width: 14px; height: 14px; }
+.step-lbl { font-size: 10.5px; color: #C4C9D4; text-align: center; line-height: 1.4; max-width: 80px; transition: color 0.3s; font-weight: 500; }
+.step.active .step-lbl { color: #DC2626; font-weight: 700; }
+.step.done .step-lbl { color: #EF4444; }
+.step.active .step-num { color: #DC2626; }
+.step.done .step-num { color: #EF4444; }
 
-  /* DETAIL */
-  .detail { margin-top: 18px; background: #FFF7F7; border-radius: 12px; border: 1px solid #FEE2E2; padding: 16px 18px; min-height: 120px; }
-  .d-title { font-size: 13px; font-weight: 600; color: #DC2626; margin-bottom: 8px; }
-  .d-units { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
-  .d-unit { font-size: 11px; background: #FEE2E2; color: #B91C1C; border-radius: 6px; padding: 2px 8px; font-weight: 500; }
-  .d-text { font-size: 12.5px; color: #4B5563; line-height: 1.7; }
+/* DETAIL */
+.detail-wrap { padding: 14px 24px 20px; }
+.detail {
+  background: #FAFAFA; border-radius: 14px; border: 1px solid #F0F0F0;
+  padding: 18px 20px; min-height: 130px; position: relative; overflow: hidden;
+}
+.detail::before {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 4px; height: 100%; background: #DC2626; border-radius: 4px 0 0 4px;
+}
+.d-badge {
+  display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.07em;
+  color: #DC2626; background: #FEF2F2; border-radius: 6px; padding: 2px 8px; margin-bottom: 8px; text-transform: uppercase;
+}
+.d-title { font-size: 13.5px; font-weight: 700; color: #111827; margin-bottom: 10px; line-height: 1.45; }
+.d-units { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+.d-unit {
+  font-size: 11px; background: #fff; color: #374151;
+  border-radius: 6px; padding: 3px 9px; font-weight: 500; border: 1px solid #E5E7EB;
+}
+.d-unit:first-child { background: #FEF2F2; color: #B91C1C; border-color: #FECACA; }
+.d-text { font-size: 13px; color: #4B5563; line-height: 1.75; }
 
-  /* PROGRESS */
-  .progress-bar-wrap { margin-top: 12px; height: 3px; background: #E5E7EB; border-radius: 2px; overflow: hidden; }
-  .progress-bar-inner { height: 100%; background: #DC2626; width: 0%; border-radius: 2px; }
-  .prog-txt { font-size: 12px; color: #9CA3AF; text-align: center; margin-top: 10px; }
+/* DOTS */
+.prog-row { display: flex; align-items: center; justify-content: flex-end; padding: 0 24px 18px; gap: 8px; }
+.prog-dots { display: flex; gap: 4px; }
+.prog-dot { width: 6px; height: 6px; border-radius: 50%; background: #E5E7EB; transition: all 0.3s; }
+.prog-dot.active { background: #DC2626; width: 18px; border-radius: 3px; }
+.prog-dot.done { background: #FECACA; }
+.prog-txt { font-size: 11px; color: #9CA3AF; font-weight: 500; }
 
-  /* DEADLINE TABLE */
-  .deadline-wrap { max-width: 720px; margin: 24px auto 0; background: #fff; border-radius: 16px; padding: 22px 24px; border: 1px solid #F3F4F6; }
-  .deadline-title { font-size: 15px; font-weight: 600; color: #B91C1C; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-  .deadline-title svg { width: 18px; height: 18px; }
-  .dl-section { font-size: 12px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.05em; margin: 14px 0 8px; }
-  .dl-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; border-radius: 8px; margin-bottom: 4px; font-size: 13px; }
-  .dl-row:nth-child(odd) { background: #F9FAFB; }
-  .dl-label { color: #374151; }
-  .dl-date { color: #DC2626; font-weight: 600; white-space: nowrap; margin-left: 12px; }
+/* DEADLINE */
+.deadline-card {
+  max-width: 760px; margin: 14px auto 0;
+  background: #fff; border-radius: 20px; overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.04);
+}
+.dl-header { display: flex; align-items: center; gap: 10px; padding: 18px 22px 14px; border-bottom: 1px solid #F5F5F5; }
+.dl-icon { width: 34px; height: 34px; background: #FEF2F2; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.dl-icon svg { width: 16px; height: 16px; }
+.dl-heading { font-size: 13.5px; font-weight: 700; color: #111827; }
+.dl-body { padding: 8px 16px 16px; }
+.dl-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 10px; border-radius: 10px; margin-bottom: 3px; transition: background 0.15s;
+}
+.dl-row:hover { background: #FEF2F2; }
+.dl-label { font-size: 13px; color: #374151; }
+.dl-date { font-size: 12px; color: #DC2626; font-weight: 700; white-space: nowrap; margin-left: 12px; background: #FEF2F2; padding: 2px 10px; border-radius: 20px; }
 </style>
 </head>
 <body>
 
-<div class="page-title">Trình tự, thủ tục lập hồ sơ hợp đồng, nghiệm thu, thanh lý các hợp đồng cung cấp và sử dụng sản phẩm, dịch vụ thủy lợi năm 2026</div>
-<div class="page-sub">Bấm vào từng bước để xem chi tiết</div>
-
-<div class="group-tabs">
-  <div class="gtab active" onclick="switchGroup(0)">Nhóm I — Được hỗ trợ</div>
-  <div class="gtab" onclick="switchGroup(1)">Nhóm II — Không hỗ trợ</div>
+<div class="page-header">
+  <div class="page-badge">
+    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="6" cy="6" r="5"/><line x1="6" y1="4" x2="6" y2="6.5"/><circle cx="6" cy="8.5" r="0.5" fill="currentColor"/></svg>
+    Công ty TNHH MTV khai thác công trình thủy lợi Ninh Thuận
+  </div>
+  <div class="page-title">
+    Trình tự, thủ tục lập hồ sơ hợp đồng, nghiệm thu, thanh lý<br>
+    <span>các hợp đồng cung cấp và sử dụng sản phẩm, dịch vụ thủy lợi năm 2026</span>
+  </div>
+  <div class="page-sub">Bấm vào từng bước để xem chi tiết</div>
 </div>
 
-<div class="menu-wrap" id="menu-wrap"></div>
-
-<div class="wrap">
-  <div class="hdr">
-    <div class="hdr-icon" id="hdr-icon">
-      <svg viewBox="0 0 20 20" fill="none" stroke="#B91C1C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="2" width="14" height="16" rx="2"/>
-        <line x1="6" y1="7" x2="14" y2="7"/>
-        <line x1="6" y1="10" x2="14" y2="10"/>
-        <line x1="6" y1="13" x2="10" y2="13"/>
-      </svg>
-    </div>
-    <div class="hdr-title" id="hdr-title"></div>
+<div class="main-card">
+  <div class="group-bar">
+    <div class="gtab active" onclick="switchGroup(0)">Nhóm I &mdash; Được hỗ trợ</div>
+    <div class="gtab" onclick="switchGroup(1)">Nhóm II &mdash; Không hỗ trợ</div>
+  </div>
+  <div class="flow-bar" id="flow-bar"></div>
+  <div class="wf-title-bar">
+    <div class="wf-icon" id="wf-icon"></div>
+    <div class="wf-title" id="wf-title"></div>
   </div>
   <div class="timeline-wrap">
     <div class="track-bg"></div>
     <div class="track-fill"><div class="track-fill-inner" id="track-fill"></div></div>
     <div class="steps-row" id="steps-row"></div>
   </div>
-  <div class="detail" id="detail"></div>
-  <div class="progress-bar-wrap"><div class="progress-bar-inner" id="progress-bar-inner"></div></div>
-  <div class="prog-txt" id="prog-txt"></div>
+  <div class="detail-wrap"><div class="detail" id="detail"></div></div>
+  <div class="prog-row">
+    <div class="prog-dots" id="prog-dots"></div>
+    <div class="prog-txt" id="prog-txt"></div>
+  </div>
 </div>
 
-<!-- DEADLINE TABLE -->
-<div class="deadline-wrap">
-  <div class="deadline-title">
-    <svg viewBox="0 0 20 20" fill="none" stroke="#B91C1C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="4" width="14" height="13" rx="2"/>
-      <line x1="3" y1="8" x2="17" y2="8"/>
-      <line x1="7" y1="2" x2="7" y2="6"/>
-      <line x1="13" y1="2" x2="13" y2="6"/>
-    </svg>
-    <span id="dl-heading">Thời hạn nộp hồ sơ — Nhóm I</span>
+<div class="deadline-card">
+  <div class="dl-header">
+    <div class="dl-icon">
+      <svg viewBox="0 0 20 20" fill="none" stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="14" height="13" rx="2"/>
+        <line x1="3" y1="8" x2="17" y2="8"/>
+        <line x1="7" y1="2" x2="7" y2="6"/>
+        <line x1="13" y1="2" x2="13" y2="6"/>
+      </svg>
+    </div>
+    <div class="dl-heading" id="dl-heading"></div>
   </div>
-  <div id="dl-body"></div>
+  <div class="dl-body" id="dl-body"></div>
 </div>
 
 <script>
 const groups = [
   [
-    {
-      label: "Ký kết HĐ",
-      title: "I.1 Ký kết hợp đồng — Dịch vụ được hỗ trợ",
-      icon: "contract",
-      steps: [
-        { num:"01", lbl:"Rà soát hộ\ndùng nước", title:"Bước 1: Rà soát và lập danh sách các hộ dùng nước", units:["Trạm Thủy nông (chủ trì)","UBND xã/phường","Tổ dùng nước / HTX"], text:"Căn cứ kế hoạch diện tích năm 2026 (QĐ 499/QĐ-UBND), các Trạm Thủy nông rà soát tình hình sản xuất, lập Bảng tổng hợp danh sách hộ dùng nước (mẫu TH2) và gửi file mềm về Phòng Quản lý nước và Công trình." },
-        { num:"02", lbl:"Kiểm tra &\nxác nhận", title:"Bước 2: Kiểm tra và xác nhận danh sách hộ dùng nước", units:["Phòng QL nước & CT (chủ trì)","Trạm Thủy nông","UBND xã/phường"], text:"Phòng Quản lý nước kiểm tra, rà soát số liệu. Sau khi thống nhất, các Trạm in bảng tổng hợp và tổ chức lấy ý kiến, ký xác nhận của Tổ dùng nước, HTX và UBND xã/phường." },
-        { num:"03", lbl:"Tổng hợp hồ\nsơ & dự thảo HĐ", title:"Bước 3: Tổng hợp hồ sơ và lập dự thảo hợp đồng", units:["Phòng KH – KT (chủ trì)","Phòng QL nước & CT","Trạm Thủy nông"], text:"Nếu 1 xã/phường chỉ có 1 Trạm: Trạm lập hồ sơ, ký và gửi về Phòng KH-KT. Nếu từ 2 Trạm trở lên: tổng hợp qua Phòng QL nước theo từng xã/phường rồi chuyển Phòng KH-KT lập hợp đồng." },
-        { num:"04", lbl:"Trình ký nội\nbộ & gửi ĐP", title:"Bước 4: Kiểm tra, trình ký nội bộ và gửi hồ sơ cho địa phương", units:["Phòng KH – KT (chủ trì)","Phòng QL nước & CT","Trạm Thủy nông"], text:"Phòng KH-KT lập phiếu trình, xác nhận diện tích, trình Giám đốc/Phó Giám đốc ký. Sau khi ký xong, ban hành Công văn gửi UBND xã/phường và chuyển hồ sơ cho các Trạm làm việc với địa phương." },
-        { num:"05", lbl:"Ký kết với\nđịa phương", title:"Bước 5: Tổ chức ký kết hợp đồng với địa phương", units:["Trạm Thủy nông (chủ trì)","Phòng KH-KT","UBND xã/phường"], text:"Các Trạm chủ động liên hệ UBND xã/phường để ký kết hợp đồng. Nếu 1 xã có từ 2 Trạm trở lên, Trạm có diện tích lớn hơn chủ trì ký kết. Vướng mắc phải báo cáo kịp thời Ban Giám đốc." }
+    { label:"Ký kết HĐ", icon:"contract", title:"I.1  Ký kết hợp đồng — Dịch vụ được hỗ trợ",
+      steps:[
+        {num:"01",lbl:"Rà soát hộ\ndùng nước",title:"Bước 1: Rà soát và lập danh sách các hộ dùng nước",units:["Trạm Thủy nông (chủ trì)","UBND xã/phường","Tổ dùng nước / HTX"],text:"Căn cứ kế hoạch diện tích năm 2026 (QĐ 499/QĐ-UBND), các Trạm Thủy nông rà soát tình hình sản xuất, lập Bảng tổng hợp danh sách hộ dùng nước (mẫu TH2) và gửi file mềm về Phòng Quản lý nước và Công trình."},
+        {num:"02",lbl:"Kiểm tra &\nxác nhận",title:"Bước 2: Kiểm tra và xác nhận danh sách hộ dùng nước",units:["Phòng QL nước & CT (chủ trì)","Trạm Thủy nông","UBND xã/phường"],text:"Phòng Quản lý nước kiểm tra, rà soát số liệu. Sau khi thống nhất, các Trạm in bảng tổng hợp và tổ chức lấy ý kiến, ký xác nhận của Tổ dùng nước, HTX và UBND xã/phường."},
+        {num:"03",lbl:"Tổng hợp hồ\nsơ & dự thảo HĐ",title:"Bước 3: Tổng hợp hồ sơ và lập dự thảo hợp đồng",units:["Phòng KH – KT (chủ trì)","Phòng QL nước & CT","Trạm Thủy nông"],text:"Nếu 1 xã/phường chỉ có 1 Trạm: Trạm lập hồ sơ, ký và gửi về Phòng KH-KT. Nếu từ 2 Trạm trở lên: tổng hợp qua Phòng QL nước theo từng xã/phường rồi chuyển Phòng KH-KT lập hợp đồng."},
+        {num:"04",lbl:"Trình ký nội\nbộ & gửi ĐP",title:"Bước 4: Kiểm tra, trình ký nội bộ và gửi hồ sơ cho địa phương",units:["Phòng KH – KT (chủ trì)","Phòng QL nước & CT","Trạm Thủy nông"],text:"Phòng KH-KT lập phiếu trình, xác nhận diện tích, trình Giám đốc/Phó Giám đốc ký. Sau khi ký xong, ban hành Công văn gửi UBND xã/phường và chuyển hồ sơ cho các Trạm làm việc với địa phương."},
+        {num:"05",lbl:"Ký kết với\nđịa phương",title:"Bước 5: Tổ chức ký kết hợp đồng với địa phương",units:["Trạm Thủy nông (chủ trì)","Phòng KH-KT","UBND xã/phường"],text:"Các Trạm chủ động liên hệ UBND xã/phường để ký kết hợp đồng. Nếu 1 xã có từ 2 Trạm trở lên, Trạm có diện tích lớn hơn chủ trì ký kết. Vướng mắc phải báo cáo kịp thời Ban Giám đốc."}
       ]
     },
-    {
-      label: "Nghiệm thu",
-      title: "I.2 Nghiệm thu diện tích tưới, cấp nước",
-      icon: "check",
-      steps: [
-        { num:"01", lbl:"Rà soát diện tích\ndự kiến NT", title:"Bước 1: Rà soát và lập danh sách diện tích dự kiến nghiệm thu", units:["Trạm Thủy nông (chủ trì)","UBND xã/phường","Tổ dùng nước / HTX"], text:"Cuối vụ hoặc cuối năm, các Trạm Thủy nông chủ động rà soát tình hình cấp nước thực tế. Phối hợp với địa phương lập Bảng tổng hợp danh sách hộ dùng nước có diện tích nghiệm thu (mẫu TH4) và gửi file mềm về Phòng Quản lý nước và Công trình." },
-        { num:"02", lbl:"Kiểm tra &\nxác nhận DT", title:"Bước 2: Kiểm tra và xác nhận diện tích nghiệm thu", units:["Phòng QL nước & CT (chủ trì)","Trạm Thủy nông","Phòng KH – KT","UBND xã/phường"], text:"Phòng QL nước & CT phối hợp với Phòng KH-KT kiểm tra, rà soát diện tích theo mẫu TH4. Sau khi thống nhất, các Trạm in bảng tổng hợp và tổ chức ký xác nhận của từng hộ dùng nước." },
-        { num:"03", lbl:"Tổ chức\nnghiệm thu", title:"Bước 3: Tổ chức nghiệm thu diện tích tưới, cấp nước", units:["Trạm Thủy nông (chủ trì)","UBND xã/phường","Tổ dùng nước / HTX","Phòng QL nước & CT"], text:"Các Trạm phối hợp với Tổ dùng nước, HTX và UBND xã/phường kiểm tra, thống nhất diện tích tưới thực tế và lập Biên bản nghiệm thu. Tổ dùng nước và UBND xã/phường ký xác nhận đồng thời vào Bảng tổng hợp và Biên bản nghiệm thu — làm cơ sở thanh lý hợp đồng." }
+    { label:"Nghiệm thu", icon:"check", title:"I.2  Nghiệm thu diện tích tưới, cấp nước",
+      steps:[
+        {num:"01",lbl:"Rà soát diện tích\ndự kiến NT",title:"Bước 1: Rà soát và lập danh sách diện tích dự kiến nghiệm thu",units:["Trạm Thủy nông (chủ trì)","UBND xã/phường","Tổ dùng nước / HTX"],text:"Cuối vụ hoặc cuối năm, các Trạm Thủy nông chủ động rà soát tình hình cấp nước thực tế. Phối hợp với địa phương lập Bảng tổng hợp danh sách hộ dùng nước có diện tích nghiệm thu (mẫu TH4) và gửi file mềm về Phòng Quản lý nước và Công trình."},
+        {num:"02",lbl:"Kiểm tra &\nxác nhận DT",title:"Bước 2: Kiểm tra và xác nhận diện tích nghiệm thu",units:["Phòng QL nước & CT (chủ trì)","Trạm Thủy nông","Phòng KH – KT","UBND xã/phường"],text:"Phòng QL nước & CT phối hợp với Phòng KH-KT kiểm tra, rà soát diện tích theo mẫu TH4. Sau khi thống nhất, các Trạm in bảng tổng hợp và tổ chức ký xác nhận của từng hộ dùng nước."},
+        {num:"03",lbl:"Tổ chức\nnghiệm thu",title:"Bước 3: Tổ chức nghiệm thu diện tích tưới, cấp nước",units:["Trạm Thủy nông (chủ trì)","UBND xã/phường","Tổ dùng nước / HTX","Phòng QL nước & CT"],text:"Các Trạm phối hợp với Tổ dùng nước, HTX và UBND xã/phường kiểm tra, thống nhất diện tích tưới thực tế và lập Biên bản nghiệm thu. Tổ dùng nước và UBND xã/phường ký xác nhận đồng thời vào Bảng tổng hợp và Biên bản nghiệm thu — làm cơ sở thanh lý hợp đồng."}
       ]
     },
-    {
-      label: "Thanh lý HĐ",
-      title: "I.3 Thanh lý hợp đồng diện tích tưới, cấp nước",
-      icon: "sign",
-      steps: [
-        { num:"01", lbl:"Lập biên bản\nthanh lý HĐ", title:"Bước 1: Lập Biên bản thanh lý hợp đồng", units:["Trạm Thủy nông (chủ trì)","Phòng QL nước & CT","Phòng KH – KT"], text:"Nếu 1 xã/phường chỉ có 1 Trạm: Trạm lập Biên bản thanh lý, kèm hồ sơ nghiệm thu gửi về Phòng KH-KT. Nếu từ 2 Trạm trở lên: các Trạm gửi hồ sơ về Phòng QL nước & CT tổng hợp theo từng xã/phường, sau đó chuyển Phòng KH-KT lập Biên bản thanh lý." },
-        { num:"02", lbl:"Kiểm tra &\ntrình ký nội bộ", title:"Bước 2: Kiểm tra số liệu và trình ký thanh lý hợp đồng", units:["Phòng KH – KT (chủ trì)","Phòng QL nước & CT"], text:"Phòng KH-KT lập phiếu trình hồ sơ thanh lý, gửi Phòng QL nước & CT xác nhận số liệu diện tích, sau đó trình Giám đốc hoặc Phó Giám đốc phụ trách địa bàn ký theo phân công, ủy quyền." },
-        { num:"03", lbl:"Ký thanh lý\nvới địa phương", title:"Bước 3: Tổ chức ký thanh lý hợp đồng với địa phương", units:["Trạm Thủy nông (chủ trì)","Phòng KH – KT","UBND xã/phường"], text:"Sau khi Biên bản thanh lý được ký phía Công ty, Phòng KH-KT chuyển hồ sơ cho các Trạm làm việc với UBND xã/phường ký xác nhận. Nếu 1 xã có từ 2 Trạm trở lên, Trạm có diện tích lớn hơn chủ trì ký kết, Trạm còn lại phối hợp." }
+    { label:"Thanh lý HĐ", icon:"sign", title:"I.3  Thanh lý hợp đồng diện tích tưới, cấp nước",
+      steps:[
+        {num:"01",lbl:"Lập biên bản\nthanh lý HĐ",title:"Bước 1: Lập Biên bản thanh lý hợp đồng",units:["Trạm Thủy nông (chủ trì)","Phòng QL nước & CT","Phòng KH – KT"],text:"Nếu 1 xã/phường chỉ có 1 Trạm: Trạm lập Biên bản thanh lý, kèm hồ sơ nghiệm thu gửi về Phòng KH-KT. Nếu từ 2 Trạm trở lên: các Trạm gửi hồ sơ về Phòng QL nước & CT tổng hợp theo từng xã/phường, sau đó chuyển Phòng KH-KT lập Biên bản thanh lý."},
+        {num:"02",lbl:"Kiểm tra &\ntrình ký nội bộ",title:"Bước 2: Kiểm tra số liệu và trình ký thanh lý hợp đồng",units:["Phòng KH – KT (chủ trì)","Phòng QL nước & CT"],text:"Phòng KH-KT lập phiếu trình hồ sơ thanh lý, gửi Phòng QL nước & CT xác nhận số liệu diện tích, sau đó trình Giám đốc hoặc Phó Giám đốc phụ trách địa bàn ký theo phân công, ủy quyền."},
+        {num:"03",lbl:"Ký thanh lý\nvới địa phương",title:"Bước 3: Tổ chức ký thanh lý hợp đồng với địa phương",units:["Trạm Thủy nông (chủ trì)","Phòng KH – KT","UBND xã/phường"],text:"Sau khi Biên bản thanh lý được ký phía Công ty, Phòng KH-KT chuyển hồ sơ cho các Trạm làm việc với UBND xã/phường ký xác nhận. Nếu 1 xã có từ 2 Trạm trở lên, Trạm có diện tích lớn hơn chủ trì ký kết, Trạm còn lại phối hợp."}
       ]
     }
   ],
   [
-    {
-      label: "Ký kết HĐ",
-      title: "II.1 Ký kết hợp đồng — Dịch vụ không hỗ trợ",
-      icon: "contract",
-      steps: [
-        { num:"01", lbl:"Rà soát nhu cầu\nsử dụng nước", title:"Bước 1: Rà soát nhu cầu sử dụng nước", units:["Trạm Thủy nông (chủ trì)"], text:"Các Trạm thủy nông chủ động rà soát, lập danh sách các tổ chức, cá nhân không được hỗ trợ có nhu cầu sử dụng nước. Hướng dẫn họ gửi văn bản đề nghị ký kết hợp đồng về Công ty. Lưu ý: Nếu đã ký hợp đồng vụ/năm trước và tiếp tục có nhu cầu, không cần thực hiện Bước 1 và Bước 2." },
-        { num:"02", lbl:"Kiểm tra\nhiện trường", title:"Bước 2: Kiểm tra hiện trường", units:["Phòng QL nước & CT (chủ trì)","Phòng KH – KT","Trạm Thủy nông"], text:"Phòng QL nước & CT chủ trì phối hợp với Phòng KH-KT và Trạm Thủy nông kiểm tra hiện trường, lập biên bản kiểm tra làm cơ sở tham mưu văn bản phản hồi. Nếu có thay đổi diện tích tưới hoặc đối tượng sử dụng nước, phải thực hiện lại bước này." },
-        { num:"03", lbl:"Lập\nhợp đồng", title:"Bước 3: Lập hợp đồng", units:["Trạm Thủy nông (chủ trì)","Phòng QL nước & CT","Đơn vị sử dụng nước"], text:"Khi Công ty thống nhất cấp nước, Trạm Thủy nông phối hợp với đơn vị sử dụng nước lập dự thảo hợp đồng (mẫu TB 18/TB-CTKTTL). Gửi file dự thảo về Phòng QL nước & CT để rà soát. Sau khi thống nhất, Trưởng Trạm ký với đơn vị sử dụng nước rồi gửi hồ sơ về Phòng KH-KT." },
-        { num:"04", lbl:"Kiểm tra &\ntrình ký HĐ", title:"Bước 4: Kiểm tra và trình ký hợp đồng", units:["Phòng KH – KT (chủ trì)","Phòng QL nước & CT"], text:"Phòng KH-KT kiểm tra hồ sơ, lập phiếu trình và chuyển sang Phòng QL nước & CT xác nhận số liệu diện tích hoặc khối lượng nước. Sau khi thống nhất, Phòng KH-KT trình Giám đốc hoặc Phó Giám đốc phụ trách địa bàn ký hợp đồng theo phân công, ủy quyền." }
+    { label:"Ký kết HĐ", icon:"contract", title:"II.1  Ký kết hợp đồng — Dịch vụ không hỗ trợ",
+      steps:[
+        {num:"01",lbl:"Rà soát nhu cầu\nsử dụng nước",title:"Bước 1: Rà soát nhu cầu sử dụng nước",units:["Trạm Thủy nông (chủ trì)"],text:"Các Trạm thủy nông chủ động rà soát, lập danh sách các tổ chức, cá nhân không được hỗ trợ có nhu cầu sử dụng nước. Hướng dẫn họ gửi văn bản đề nghị ký kết hợp đồng về Công ty. Lưu ý: Nếu đã ký hợp đồng vụ/năm trước và tiếp tục có nhu cầu, không cần thực hiện Bước 1 và Bước 2."},
+        {num:"02",lbl:"Kiểm tra\nhiện trường",title:"Bước 2: Kiểm tra hiện trường",units:["Phòng QL nước & CT (chủ trì)","Phòng KH – KT","Trạm Thủy nông"],text:"Phòng QL nước & CT chủ trì phối hợp với Phòng KH-KT và Trạm Thủy nông kiểm tra hiện trường, lập biên bản kiểm tra làm cơ sở tham mưu văn bản phản hồi. Nếu có thay đổi diện tích tưới hoặc đối tượng sử dụng nước, phải thực hiện lại bước này."},
+        {num:"03",lbl:"Lập\nhợp đồng",title:"Bước 3: Lập hợp đồng",units:["Trạm Thủy nông (chủ trì)","Phòng QL nước & CT","Đơn vị sử dụng nước"],text:"Khi Công ty thống nhất cấp nước, Trạm Thủy nông phối hợp với đơn vị sử dụng nước lập dự thảo hợp đồng (mẫu TB 18/TB-CTKTTL). Gửi file dự thảo về Phòng QL nước & CT để rà soát. Sau khi thống nhất, Trưởng Trạm ký với đơn vị sử dụng nước rồi gửi hồ sơ về Phòng KH-KT."},
+        {num:"04",lbl:"Kiểm tra &\ntrình ký HĐ",title:"Bước 4: Kiểm tra và trình ký hợp đồng",units:["Phòng KH – KT (chủ trì)","Phòng QL nước & CT"],text:"Phòng KH-KT kiểm tra hồ sơ, lập phiếu trình và chuyển sang Phòng QL nước & CT xác nhận số liệu. Sau khi thống nhất, Phòng KH-KT trình Giám đốc hoặc Phó Giám đốc phụ trách địa bàn ký hợp đồng theo phân công, ủy quyền."}
       ]
     },
-    {
-      label: "Nghiệm thu",
-      title: "II.2 Nghiệm thu hợp đồng — Dịch vụ không hỗ trợ",
-      icon: "check",
-      steps: [
-        { num:"01", lbl:"Lập biên bản\nnghiệm thu", title:"Bước 1: Lập biên bản nghiệm thu", units:["Trạm Thủy nông (chủ trì)","Đơn vị sử dụng nước"], text:"Căn cứ nội dung hợp đồng, Trạm Thủy nông phối hợp với đơn vị sử dụng nước lập biên bản nghiệm thu khối lượng cấp nước theo tháng hoặc chu kỳ quy định. Biên bản do Trưởng Trạm ký với đơn vị sử dụng nước trước khi gửi về Công ty." },
-        { num:"02", lbl:"Kiểm tra &\ntrình ký xác nhận", title:"Bước 2: Kiểm tra và trình ký xác nhận nghiệm thu", units:["Phòng KH – KT (chủ trì)","Phòng Tài vụ"], text:"Hồ sơ nghiệm thu gửi về Phòng KH-KT để kiểm tra, sau đó trình Giám đốc hoặc Phó Giám đốc ký xác nhận. Đồng thời cung cấp số liệu cho Phòng Tài vụ xuất hóa đơn theo quy định." }
+    { label:"Nghiệm thu", icon:"check", title:"II.2  Nghiệm thu hợp đồng — Dịch vụ không hỗ trợ",
+      steps:[
+        {num:"01",lbl:"Lập biên bản\nnghiệm thu",title:"Bước 1: Lập biên bản nghiệm thu",units:["Trạm Thủy nông (chủ trì)","Đơn vị sử dụng nước"],text:"Căn cứ nội dung hợp đồng, Trạm Thủy nông phối hợp với đơn vị sử dụng nước lập biên bản nghiệm thu khối lượng cấp nước theo tháng hoặc chu kỳ quy định. Biên bản do Trưởng Trạm ký với đơn vị sử dụng nước trước khi gửi về Công ty."},
+        {num:"02",lbl:"Kiểm tra &\ntrình ký xác nhận",title:"Bước 2: Kiểm tra và trình ký xác nhận nghiệm thu",units:["Phòng KH – KT (chủ trì)","Phòng Tài vụ"],text:"Hồ sơ nghiệm thu gửi về Phòng KH-KT để kiểm tra, sau đó trình Giám đốc hoặc Phó Giám đốc ký xác nhận. Đồng thời cung cấp số liệu cho Phòng Tài vụ xuất hóa đơn theo quy định."}
       ]
     },
-    {
-      label: "Thanh lý HĐ",
-      title: "II.3 Thanh lý hợp đồng — Dịch vụ không hỗ trợ",
-      icon: "sign",
-      steps: [
-        { num:"01", lbl:"Lập biên bản\nthanh lý HĐ", title:"Bước 1: Lập biên bản thanh lý hợp đồng", units:["Trạm Thủy nông (chủ trì)","Đơn vị sử dụng nước"], text:"Khi kết thúc thời hạn hợp đồng hoặc cuối năm, Trạm Thủy nông phối hợp với đơn vị sử dụng nước lập biên bản thanh lý. Biên bản do Trưởng Trạm ký với đơn vị sử dụng nước trước khi gửi hồ sơ về Công ty." },
-        { num:"02", lbl:"Kiểm tra &\ntrình ký xác nhận", title:"Bước 2: Kiểm tra và trình ký xác nhận thanh lý", units:["Phòng KH – KT (chủ trì)"], text:"Hồ sơ thanh lý gửi về Phòng KH-KT để kiểm tra và trình Giám đốc hoặc Phó Giám đốc phụ trách địa bàn ký xác nhận thanh lý hợp đồng theo phân công, ủy quyền của Chủ tịch Công ty." }
+    { label:"Thanh lý HĐ", icon:"sign", title:"II.3  Thanh lý hợp đồng — Dịch vụ không hỗ trợ",
+      steps:[
+        {num:"01",lbl:"Lập biên bản\nthanh lý HĐ",title:"Bước 1: Lập biên bản thanh lý hợp đồng",units:["Trạm Thủy nông (chủ trì)","Đơn vị sử dụng nước"],text:"Khi kết thúc thời hạn hợp đồng hoặc cuối năm, Trạm Thủy nông phối hợp với đơn vị sử dụng nước lập biên bản thanh lý. Biên bản do Trưởng Trạm ký với đơn vị sử dụng nước trước khi gửi hồ sơ về Công ty."},
+        {num:"02",lbl:"Kiểm tra &\ntrình ký xác nhận",title:"Bước 2: Kiểm tra và trình ký xác nhận thanh lý",units:["Phòng KH – KT (chủ trì)"],text:"Hồ sơ thanh lý gửi về Phòng KH-KT để kiểm tra và trình Giám đốc hoặc Phó Giám đốc phụ trách địa bàn ký xác nhận thanh lý hợp đồng theo phân công, ủy quyền của Chủ tịch Công ty."}
       ]
     }
   ]
 ];
 
 const icons = {
-  contract: `<svg viewBox="0 0 20 20" fill="none" stroke="#B91C1C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="14" height="16" rx="2"/><line x1="6" y1="7" x2="14" y2="7"/><line x1="6" y1="10" x2="14" y2="10"/><line x1="6" y1="13" x2="10" y2="13"/></svg>`,
-  check: `<svg viewBox="0 0 20 20" fill="none" stroke="#B91C1C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/><rect x="2" y="2" width="16" height="16" rx="3"/></svg>`,
-  sign: `<svg viewBox="0 0 20 20" fill="none" stroke="#B91C1C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h10M5 12h6"/><rect x="3" y="2" width="14" height="16" rx="2"/><path d="M13 15l2 2 3-3" stroke-width="1.5"/></svg>`
+  contract:`<svg viewBox="0 0 20 20" fill="none" stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="14" height="16" rx="2"/><line x1="6" y1="7" x2="14" y2="7"/><line x1="6" y1="10" x2="14" y2="10"/><line x1="6" y1="13" x2="10" y2="13"/></svg>`,
+  check:`<svg viewBox="0 0 20 20" fill="none" stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/><rect x="2" y="2" width="16" height="16" rx="3"/></svg>`,
+  sign:`<svg viewBox="0 0 20 20" fill="none" stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h10M5 12h6"/><rect x="3" y="2" width="14" height="16" rx="2"/><path d="M13 15l2 2 3-3"/></svg>`
 };
 
+const deadlines = [
+  [
+    {label:"Hợp đồng vụ Đông Xuân",date:"31/3/2026"},
+    {label:"Hợp đồng cây trồng theo năm",date:"31/3/2026"},
+    {label:"Nghiệm thu & thanh lý vụ Đông Xuân",date:"15/5/2026"},
+    {label:"Hợp đồng vụ Hè Thu",date:"10/6/2026"},
+    {label:"Nghiệm thu & thanh lý vụ Hè Thu",date:"30/9/2026"},
+    {label:"Hợp đồng vụ Mùa",date:"10/10/2026"},
+    {label:"Nghiệm thu & thanh lý vụ Mùa",date:"15/12/2026"},
+    {label:"Nghiệm thu & thanh lý cả năm",date:"15/12/2026"}
+  ],
+  [
+    {label:"Hồ sơ hợp đồng",date:"15/3/2026"},
+    {label:"Hồ sơ nghiệm thu hợp đồng",date:"Cuối tháng / cuối quý"},
+    {label:"Hồ sơ thanh lý hợp đồng",date:"15/12/2026"}
+  ]
+];
+
 const STEP_DUR = 10000;
-let curGroup = 0, curFlow = 0, cur = 0;
-let playing = true, stepTimer = null, pbTimer = null, pbStart = null;
+let curGroup=0, curFlow=0, cur=0, stepTimer=null, pbTimer=null, pbStart=null;
 
-function pct(i, total) { return total <= 1 ? 0 : (i / (total - 1)) * 100; }
+function getSteps(){ return groups[curGroup][curFlow].steps; }
 
-function getSteps() { return groups[curGroup][curFlow].steps; }
-
-function renderMenu() {
-  const wrap = document.getElementById('menu-wrap');
-  wrap.innerHTML = groups[curGroup].map((f, i) =>
-    `<div class="menu-btn ${i===curFlow?'active':''}" onclick="switchFlow(${i})">${f.label}</div>`
+function renderFlowBar(){
+  document.getElementById('flow-bar').innerHTML = groups[curGroup].map((f,i)=>
+    `<div class="flow-btn ${i===curFlow?'active':''}" onclick="switchFlow(${i})">${icons[f.icon]}${f.label}</div>`
   ).join('');
 }
 
-function renderHeader() {
+function renderHeader(){
   const f = groups[curGroup][curFlow];
-  document.getElementById('hdr-icon').innerHTML = icons[f.icon];
-  document.getElementById('hdr-title').textContent = f.title;
+  document.getElementById('wf-icon').innerHTML = icons[f.icon];
+  document.getElementById('wf-title').textContent = f.title;
 }
 
-function renderSteps() {
+function renderSteps(){
   const steps = getSteps();
-  document.getElementById('steps-row').innerHTML = steps.map((s, i) =>
+  document.getElementById('steps-row').innerHTML = steps.map((s,i)=>
     `<div class="step ${i===cur?'active':i<cur?'done':''}" onclick="goTo(${i})">
       <div class="step-num">${s.num}</div>
       <div class="step-dot-wrap"><div class="step-dot"></div></div>
       <div class="step-lbl">${s.lbl.replace(/\n/g,'<br>')}</div>
     </div>`
   ).join('');
+  document.getElementById('prog-dots').innerHTML = steps.map((_,i)=>
+    `<div class="prog-dot ${i===cur?'active':i<cur?'done':''}"></div>`
+  ).join('');
+  document.getElementById('prog-txt').textContent = `${cur+1} / ${steps.length}`;
 }
 
-function renderDetail() {
+function renderDetail(){
   const steps = getSteps();
   const s = steps[cur];
   document.getElementById('detail').innerHTML =
-    `<div class="d-title">${s.title}</div>
+    `<div class="d-badge">Bước ${cur+1} / ${steps.length}</div>
+     <div class="d-title">${s.title}</div>
      <div class="d-units">${s.units.map(u=>`<span class="d-unit">${u}</span>`).join('')}</div>
      <div class="d-text">${s.text}</div>`;
-  document.getElementById('prog-txt').textContent = `${cur+1} / ${steps.length}`;
-  document.getElementById('track-fill').style.width = pct(cur, steps.length) + '%';
 }
 
-function startProgressBar() {
+function startAnim(){
   clearInterval(pbTimer);
-  const bar = document.getElementById('progress-bar-inner');
-  bar.style.transition = 'none';
-  bar.style.width = '0%';
+  const track = document.getElementById('track-fill');
+  const steps = getSteps(); const total = steps.length;
   pbStart = Date.now();
-  pbTimer = setInterval(() => {
-    const p = Math.min(((Date.now()-pbStart)/STEP_DUR)*100, 100);
-    bar.style.width = p + '%';
-    if (p >= 100) clearInterval(pbTimer);
-  }, 30);
+  const startPct = total<=1?0:(cur/(total-1))*100;
+  const endPct   = total<=1?100:((cur+1)/(total-1))*100;
+  const clampEnd = Math.min(endPct,100);
+  pbTimer = setInterval(()=>{
+    const ratio = Math.min((Date.now()-pbStart)/STEP_DUR,1);
+    track.style.width = (startPct+(clampEnd-startPct)*ratio)+'%';
+    if(ratio>=1) clearInterval(pbTimer);
+  },30);
 }
 
-function scheduleNext() {
+function scheduleNext(){
   clearTimeout(stepTimer);
-  if (!playing) return;
-  stepTimer = setTimeout(() => {
+  stepTimer = setTimeout(()=>{
     const steps = getSteps();
-    cur = cur < steps.length-1 ? cur+1 : 0;
-    renderSteps(); renderDetail(); startProgressBar(); scheduleNext();
+    cur = cur<steps.length-1 ? cur+1 : 0;
+    renderSteps(); renderDetail(); startAnim(); scheduleNext();
   }, STEP_DUR);
 }
 
-function goTo(i) {
-  cur = i; renderSteps(); renderDetail();
-  if (playing) { startProgressBar(); scheduleNext(); }
-}
+function goTo(i){ cur=i; renderSteps(); renderDetail(); startAnim(); scheduleNext(); }
 
-function switchFlow(i) {
-  curFlow = i; cur = 0;
+function switchFlow(i){
+  curFlow=i; cur=0;
   clearTimeout(stepTimer); clearInterval(pbTimer);
-  renderMenu(); renderHeader(); renderSteps(); renderDetail();
-  startProgressBar(); scheduleNext();
+  renderFlowBar(); renderHeader(); renderSteps(); renderDetail(); startAnim(); scheduleNext();
 }
 
-function switchGroup(g) {
-  curGroup = g; curFlow = 0; cur = 0;
+function switchGroup(g){
+  curGroup=g; curFlow=0; cur=0;
   clearTimeout(stepTimer); clearInterval(pbTimer);
-  document.querySelectorAll('.gtab').forEach((el,i) => el.classList.toggle('active', i===g));
-  renderMenu(); renderHeader(); renderSteps(); renderDetail();
-  renderDeadlines();
-  startProgressBar(); scheduleNext();
+  document.querySelectorAll('.gtab').forEach((el,i)=>el.classList.toggle('active',i===g));
+  renderFlowBar(); renderHeader(); renderSteps(); renderDetail();
+  renderDeadlines(); startAnim(); scheduleNext();
 }
 
-const deadlines = [
-  [
-    { label: "Hợp đồng vụ Đông Xuân", date: "31/3/2026" },
-    { label: "Hợp đồng cây trồng theo năm", date: "31/3/2026" },
-    { label: "Nghiệm thu & thanh lý vụ Đông Xuân", date: "15/5/2026" },
-    { label: "Hợp đồng vụ Hè Thu", date: "10/6/2026" },
-    { label: "Nghiệm thu & thanh lý vụ Hè Thu", date: "30/9/2026" },
-    { label: "Hợp đồng vụ Mùa", date: "10/10/2026" },
-    { label: "Nghiệm thu & thanh lý vụ Mùa", date: "15/12/2026" },
-    { label: "Nghiệm thu & thanh lý cả năm", date: "15/12/2026" }
-  ],
-  [
-    { label: "Hồ sơ hợp đồng", date: "15/3/2026" },
-    { label: "Hồ sơ nghiệm thu hợp đồng", date: "Cuối tháng / cuối quý" },
-    { label: "Hồ sơ thanh lý hợp đồng", date: "15/12/2026" }
-  ]
-];
-
-const dlHeadings = [
-  "Thời hạn nộp hồ sơ — Nhóm I (được hỗ trợ)",
-  "Thời hạn nộp hồ sơ — Nhóm II (không hỗ trợ)"
-];
-
-function renderDeadlines() {
-  document.getElementById('dl-heading').textContent = dlHeadings[curGroup];
+function renderDeadlines(){
+  const lbls=["Thời hạn nộp hồ sơ — Nhóm I (được hỗ trợ)","Thời hạn nộp hồ sơ — Nhóm II (không hỗ trợ)"];
+  document.getElementById('dl-heading').textContent = lbls[curGroup];
   document.getElementById('dl-body').innerHTML = deadlines[curGroup]
-    .map((d, i) => `<div class="dl-row" style="${i%2===0?'background:#F9FAFB':''}"><span class="dl-label">${d.label}</span><span class="dl-date">${d.date}</span></div>`)
+    .map(d=>`<div class="dl-row"><span class="dl-label">${d.label}</span><span class="dl-date">${d.date}</span></div>`)
     .join('');
 }
 
 switchGroup(0);
-renderDeadlines();
 </script>
 </body>
 </html>
