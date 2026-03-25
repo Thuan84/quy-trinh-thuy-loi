@@ -115,9 +115,29 @@ body {
   border-radius: 6px; padding: 3px 9px; font-weight: 500; border: 1px solid #E5E7EB;
 }
 .d-unit:first-child { background: #FEF2F2; color: #B91C1C; border-color: #FECACA; }
-.d-text { font-size: 13px; color: #4B5563; line-height: 1.75; }
+.d-unit-ph { background: #F0F9FF; color: #0369A1; border-color: #BAE6FD; }
+.d-units-wrap { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.d-units-row { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+.d-units-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #9CA3AF; min-width: 64px; }
+.d-text { font-size: 13px; color: #4B5563; line-height: 1.75; white-space: pre-line; }
 
-/* DOTS */
+/* SPEED CONTROLS */
+.speed-bar { display: flex; align-items: center; gap: 4px; margin-left: auto; flex-shrink: 0; }
+.spd-btn {
+  padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: 1px solid #E5E7EB; background: #fff; color: #6B7280;
+  transition: all 0.15s; user-select: none; line-height: 1.6;
+}
+.spd-btn:hover { border-color: #FECACA; color: #B91C1C; }
+.spd-btn.active { background: #DC2626; color: #fff; border-color: #DC2626; }
+.spd-pause {
+  width: 30px; height: 30px; border-radius: 6px; font-size: 13px;
+  cursor: pointer; border: 1px solid #E5E7EB; background: #fff; color: #374151;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s; user-select: none; margin-left: 2px;
+}
+.spd-pause:hover { border-color: #DC2626; color: #DC2626; }
+.spd-pause.paused { background: #FEF2F2; color: #DC2626; border-color: #FECACA; }
 .prog-row { display: flex; align-items: center; justify-content: flex-end; padding: 0 24px 18px; gap: 8px; }
 .prog-dots { display: flex; gap: 4px; }
 .prog-dot { width: 6px; height: 6px; border-radius: 50%; background: #E5E7EB; transition: all 0.3s; }
@@ -156,7 +176,7 @@ body {
     Trình tự, thủ tục lập hồ sơ hợp đồng, nghiệm thu, thanh lý<br>
     <span>các hợp đồng cung cấp và sử dụng sản phẩm, dịch vụ thủy lợi năm 2026</span>
   </div>
-  <div class="page-sub">Bấm vào từng bước để xem chi tiết</div>
+
 </div>
 
 <div class="main-card">
@@ -168,6 +188,12 @@ body {
   <div class="wf-title-bar">
     <div class="wf-icon" id="wf-icon"></div>
     <div class="wf-title" id="wf-title"></div>
+    <div class="speed-bar">
+      <div class="spd-btn" onclick="setSpeed(0.5)">0.5x</div>
+      <div class="spd-btn active" id="spd-1x" onclick="setSpeed(1)">1x</div>
+      <div class="spd-btn" onclick="setSpeed(2)">2x</div>
+      <div class="spd-pause" id="pause-btn" onclick="togglePause()" title="Dừng/Tiếp tục">&#9646;&#9646;</div>
+    </div>
   </div>
   <div class="timeline-wrap">
     <div class="track-bg"></div>
@@ -199,23 +225,23 @@ body {
 <script>
 const groups = [
   [
-    { label:"Ký kết HĐ", icon:"contract", title:"I.1  Ký kết hợp đồng — Dịch vụ được hỗ trợ",
+    { label:"Ký kết HĐ", icon:"contract", title:"I.(1) Ký kết hợp đồng — Dịch vụ được hỗ trợ",
       steps:[
         {num:"01",lbl:"Rà soát hộ\ndùng nước",title:"Bước 1: Rà soát và lập danh sách các hộ dùng nước",units:["Trạm Thủy nông (chủ trì)","UBND xã/phường","Tổ dùng nước / HTX"],text:"Căn cứ kế hoạch diện tích năm 2026 (QĐ 499/QĐ-UBND), các Trạm Thủy nông rà soát tình hình sản xuất, lập Bảng tổng hợp danh sách hộ dùng nước (mẫu TH2) và gửi file mềm về Phòng Quản lý nước và Công trình."},
-        {num:"02",lbl:"Kiểm tra &\nxác nhận",title:"Bước 2: Kiểm tra và xác nhận danh sách hộ dùng nước",units:["Phòng QL nước & CT (chủ trì)","Trạm Thủy nông","UBND xã/phường"],text:"Phòng Quản lý nước kiểm tra, rà soát số liệu. Sau khi thống nhất, các Trạm in bảng tổng hợp và tổ chức lấy ý kiến, ký xác nhận của Tổ dùng nước, HTX và UBND xã/phường."},
-        {num:"03",lbl:"Tổng hợp hồ\nsơ & dự thảo HĐ",title:"Bước 3: Tổng hợp hồ sơ và lập dự thảo hợp đồng",units:["Phòng KH – KT (chủ trì)","Phòng QL nước & CT","Trạm Thủy nông"],text:"Nếu 1 xã/phường chỉ có 1 Trạm: Trạm lập hồ sơ, ký và gửi về Phòng KH-KT. Nếu từ 2 Trạm trở lên: tổng hợp qua Phòng QL nước theo từng xã/phường rồi chuyển Phòng KH-KT lập hợp đồng."},
-        {num:"04",lbl:"Trình ký nội\nbộ & gửi ĐP",title:"Bước 4: Kiểm tra, trình ký nội bộ và gửi hồ sơ cho địa phương",units:["Phòng KH – KT (chủ trì)","Phòng QL nước & CT","Trạm Thủy nông"],text:"Phòng KH-KT lập phiếu trình, xác nhận diện tích, trình Giám đốc/Phó Giám đốc ký. Sau khi ký xong, ban hành Công văn gửi UBND xã/phường và chuyển hồ sơ cho các Trạm làm việc với địa phương."},
+        {num:"02",lbl:"Kiểm tra &\nxác nhận",title:"Bước 2: Kiểm tra và xác nhận danh sách hộ dùng nước",units:["Phòng QL nước & CT (chủ trì)","Trạm Thủy nông","UBND xã/phường"],text:"Phòng Quản lý nước kiểm tra, rà soát số liệu. Sau khi thống nhất số liệu, các Trạm tiến hành in Bảng tổng hợp danh sách các hộ dùng nước và tổ chức lấy ý kiến, ký xác nhận của Tổ dùng nước, thôn, HTX và UBND xã/phường theo quy định."},
+        {num:"03",lbl:"Tổng hợp hồ\nsơ & dự thảo HĐ",title:"Bước 3: Tổng hợp hồ sơ và lập dự thảo hợp đồng",units:["Phòng KH – KT (chủ trì)","Phòng QL nước & CT","Trạm Thủy nông"],text:"- Trường hợp 01 xã/phường chỉ có diện tích thuộc 01 Trạm Thủy nông cấp nước tưới: Trạm Thủy nông lập hồ sơ hợp đồng, ký và gửi kèm Bảng tổng hợp danh sách các hộ dùng nước đã được xác nhận về Phòng Kế hoạch – Kỹ thuật.\n- Trường hợp 01 xã/phường có diện tích cấp nước tưới thuộc từ 02 Trạm Thủy nông trở lên: Trạm Thủy nông gửi danh sách hộ dùng nước đã được xác nhận về Phòng Quản lý nước và Công trình để tổng hợp.\nCăn cứ hồ sơ do các Trạm cung cấp, Phòng Quản lý nước và Công trình tổng hợp số liệu diện tích theo từng xã/phường và cung cấp cho Phòng Kế hoạch – Kỹ thuật tham mưu lập Hợp đồng cung cấp và sử dụng sản phẩm, dịch vụ công ích thủy lợi theo từng xã/phường, đồng thời phối hợp với các Trạm Thủy nông để Trạm trưởng ký xác nhận vào hợp đồng."},
+        {num:"04",lbl:"Trình ký nội\nbộ & gửi ĐP",title:"Bước 4: Kiểm tra, trình ký nội bộ và gửi hồ sơ cho địa phương",units:["Phòng KH – KT (chủ trì)","Phòng QL nước & CT","Trạm Thủy nông"],text:"Phòng KH-KT lập phiếu trình, xác nhận diện tích, trình Giám đốc/Phó Giám đốc ký. Sau khi ký xong, Phòng Kế hoạch – Kỹ thuật tham mưu ban hành Công văn gửi UBND xã/phường và chuyển hồ sơ cho các Trạm làm việc với địa phương."},
         {num:"05",lbl:"Ký kết với\nđịa phương",title:"Bước 5: Tổ chức ký kết hợp đồng với địa phương",units:["Trạm Thủy nông (chủ trì)","Phòng KH-KT","UBND xã/phường"],text:"Các Trạm chủ động liên hệ UBND xã/phường để ký kết hợp đồng. Nếu 1 xã có từ 2 Trạm trở lên, Trạm có diện tích lớn hơn chủ trì ký kết. Vướng mắc phải báo cáo kịp thời Ban Giám đốc."}
       ]
     },
-    { label:"Nghiệm thu", icon:"check", title:"I.2  Nghiệm thu diện tích tưới, cấp nước",
+    { label:"Nghiệm thu", icon:"check", title:"I.(2) Nghiệm thu diện tích tưới, cấp nước",
       steps:[
         {num:"01",lbl:"Rà soát diện tích\ndự kiến NT",title:"Bước 1: Rà soát và lập danh sách diện tích dự kiến nghiệm thu",units:["Trạm Thủy nông (chủ trì)","UBND xã/phường","Tổ dùng nước / HTX"],text:"Cuối vụ hoặc cuối năm, các Trạm Thủy nông chủ động rà soát tình hình cấp nước thực tế. Phối hợp với địa phương lập Bảng tổng hợp danh sách hộ dùng nước có diện tích nghiệm thu (mẫu TH4) và gửi file mềm về Phòng Quản lý nước và Công trình."},
-        {num:"02",lbl:"Kiểm tra &\nxác nhận DT",title:"Bước 2: Kiểm tra và xác nhận diện tích nghiệm thu",units:["Phòng QL nước & CT (chủ trì)","Trạm Thủy nông","Phòng KH – KT","UBND xã/phường"],text:"Phòng QL nước & CT phối hợp với Phòng KH-KT kiểm tra, rà soát diện tích theo mẫu TH4. Sau khi thống nhất, các Trạm in bảng tổng hợp và tổ chức ký xác nhận của từng hộ dùng nước."},
-        {num:"03",lbl:"Tổ chức\nnghiệm thu",title:"Bước 3: Tổ chức nghiệm thu diện tích tưới, cấp nước",units:["Trạm Thủy nông (chủ trì)","UBND xã/phường","Tổ dùng nước / HTX","Phòng QL nước & CT"],text:"Các Trạm phối hợp với Tổ dùng nước, HTX và UBND xã/phường kiểm tra, thống nhất diện tích tưới thực tế và lập Biên bản nghiệm thu. Tổ dùng nước và UBND xã/phường ký xác nhận đồng thời vào Bảng tổng hợp và Biên bản nghiệm thu — làm cơ sở thanh lý hợp đồng."}
+        {num:"02",lbl:"Kiểm tra &\nxác nhận DT",title:"Bước 2: Kiểm tra và xác nhận diện tích nghiệm thu",units:["Phòng QL nước & CT (chủ trì)","Trạm Thủy nông","Phòng KH – KT","UBND xã/phường"],text:"Phòng QL nước & CT phối hợp với Phòng KH-KT kiểm tra, rà soát diện tích theo mẫu TH4. Sau khi thống nhất, các Trạm in bảng tổng hợp danh sách các hộ dùng nước có diện tích nghiệm thu và tổ chức ký xác nhận của từng hộ dùng nước."},
+        {num:"03",lbl:"Tổ chức\nnghiệm thu",title:"Bước 3: Tổ chức nghiệm thu diện tích tưới, cấp nước",units:["Trạm Thủy nông (chủ trì)","UBND xã/phường","Tổ dùng nước / HTX","Phòng QL nước & CT"],text:"- Các Trạm phối hợp với Tổ dùng nước, HTX và UBND xã/phường kiểm tra, thống nhất diện tích tưới thực tế và lập Biên bản nghiệm thu. Tổ dùng nước và UBND xã/phường ký xác nhận đồng thời vào Bảng tổng hợp và Biên bản nghiệm thu — làm cơ sở thanh lý hợp đồng.\n- Trường hợp trong 01 xã/phường có diện tích cấp nước thuộc từ 02 Trạm Thủy nông trở lên, mỗi Trạm Thủy nông phối hợp với địa phương lập Biên bản nghiệm thu đối với diện tích thuộc phạm vi quản lý của trạm mình.\n- Biên bản nghiệm thu là căn cứ để thực hiện thanh lý hợp đồng và lập hồ sơ nghiệm thu, thanh toán sản phẩm dịch vụ công ích thủy lợi năm."}
       ]
     },
-    { label:"Thanh lý HĐ", icon:"sign", title:"I.3  Thanh lý hợp đồng diện tích tưới, cấp nước",
+    { label:"Thanh lý HĐ", icon:"sign", title:"I.(3) Thanh lý hợp đồng diện tích tưới, cấp nước",
       steps:[
         {num:"01",lbl:"Lập biên bản\nthanh lý HĐ",title:"Bước 1: Lập Biên bản thanh lý hợp đồng",units:["Trạm Thủy nông (chủ trì)","Phòng QL nước & CT","Phòng KH – KT"],text:"Nếu 1 xã/phường chỉ có 1 Trạm: Trạm lập Biên bản thanh lý, kèm hồ sơ nghiệm thu gửi về Phòng KH-KT. Nếu từ 2 Trạm trở lên: các Trạm gửi hồ sơ về Phòng QL nước & CT tổng hợp theo từng xã/phường, sau đó chuyển Phòng KH-KT lập Biên bản thanh lý."},
         {num:"02",lbl:"Kiểm tra &\ntrình ký nội bộ",title:"Bước 2: Kiểm tra số liệu và trình ký thanh lý hợp đồng",units:["Phòng KH – KT (chủ trì)","Phòng QL nước & CT"],text:"Phòng KH-KT lập phiếu trình hồ sơ thanh lý, gửi Phòng QL nước & CT xác nhận số liệu diện tích, sau đó trình Giám đốc hoặc Phó Giám đốc phụ trách địa bàn ký theo phân công, ủy quyền."},
@@ -224,21 +250,21 @@ const groups = [
     }
   ],
   [
-    { label:"Ký kết HĐ", icon:"contract", title:"II.1  Ký kết hợp đồng — Dịch vụ không hỗ trợ",
+    { label:"Ký kết HĐ", icon:"contract", title:"II.(1) Ký kết hợp đồng — Dịch vụ không hỗ trợ",
       steps:[
-        {num:"01",lbl:"Rà soát nhu cầu\nsử dụng nước",title:"Bước 1: Rà soát nhu cầu sử dụng nước",units:["Trạm Thủy nông (chủ trì)"],text:"Các Trạm thủy nông chủ động rà soát, lập danh sách các tổ chức, cá nhân không được hỗ trợ có nhu cầu sử dụng nước. Hướng dẫn họ gửi văn bản đề nghị ký kết hợp đồng về Công ty. Lưu ý: Nếu đã ký hợp đồng vụ/năm trước và tiếp tục có nhu cầu, không cần thực hiện Bước 1 và Bước 2."},
-        {num:"02",lbl:"Kiểm tra\nhiện trường",title:"Bước 2: Kiểm tra hiện trường",units:["Phòng QL nước & CT (chủ trì)","Phòng KH – KT","Trạm Thủy nông"],text:"Phòng QL nước & CT chủ trì phối hợp với Phòng KH-KT và Trạm Thủy nông kiểm tra hiện trường, lập biên bản kiểm tra làm cơ sở tham mưu văn bản phản hồi. Nếu có thay đổi diện tích tưới hoặc đối tượng sử dụng nước, phải thực hiện lại bước này."},
+        {num:"01",lbl:"Rà soát nhu cầu\nsử dụng nước",title:"Bước 1: Rà soát nhu cầu sử dụng nước",units:["Trạm Thủy nông (chủ trì)"],text:"- Các Trạm thủy nông trực thuộc Công ty chủ động, thường xuyên rà soát, lập danh sách các tổ chức, cá nhân thuộc đối tượng không được hỗ trợ tiền sử dụng sản phẩm, dịch vụ thuỷ lợi theo quy định có nhu cầu sử dụng nước từ hệ thống công trình thủy lợi được giao quản lý.\n- Đồng thời hướng dẫn các tổ chức, cá nhân có văn bản gửi về Công ty đề nghị ký kết hợp đồng cung cấp và sử dụng nước."},
+        {num:"02",lbl:"Kiểm tra\nhiện trường",title:"Bước 2: Kiểm tra hiện trường",units:["Phòng QL nước & CT (chủ trì)","Phòng KH – KT","Trạm Thủy nông"],text:"Phòng Quản lý nước và Công trình chủ trì phối hợp với Phòng Kế hoạch – Kỹ thuật cùng Trạm thủy nông tổ chức kiểm tra hiện trường, lập biên bản kiểm tra làm cơ sở tham mưu văn bản phản hồi cho đơn vị có nhu cầu sử dụng nước.\n- Lưu ý:\n+ Đối với các tổ chức, cá nhân đã ký hợp đồng trong năm hoặc vụ trước liền kề và có nhu cầu tiếp tục ký hợp đồng, thì không cần thực hiện Bước 1 và Bước 2.\n+ Trường hợp có thay đổi về diện tích tưới hoặc đối tượng sử dụng nước, phải thực hiện lại từ Bước 2."},
         {num:"03",lbl:"Lập\nhợp đồng",title:"Bước 3: Lập hợp đồng",units:["Trạm Thủy nông (chủ trì)","Phòng QL nước & CT","Đơn vị sử dụng nước"],text:"Khi Công ty thống nhất cấp nước, Trạm Thủy nông phối hợp với đơn vị sử dụng nước lập dự thảo hợp đồng (mẫu TB 18/TB-CTKTTL). Gửi file dự thảo về Phòng QL nước & CT để rà soát. Sau khi thống nhất, Trưởng Trạm ký với đơn vị sử dụng nước rồi gửi hồ sơ về Phòng KH-KT."},
         {num:"04",lbl:"Kiểm tra &\ntrình ký HĐ",title:"Bước 4: Kiểm tra và trình ký hợp đồng",units:["Phòng KH – KT (chủ trì)","Phòng QL nước & CT"],text:"Phòng KH-KT kiểm tra hồ sơ, lập phiếu trình và chuyển sang Phòng QL nước & CT xác nhận số liệu. Sau khi thống nhất, Phòng KH-KT trình Giám đốc hoặc Phó Giám đốc phụ trách địa bàn ký hợp đồng theo phân công, ủy quyền."}
       ]
     },
-    { label:"Nghiệm thu", icon:"check", title:"II.2  Nghiệm thu hợp đồng — Dịch vụ không hỗ trợ",
+    { label:"Nghiệm thu", icon:"check", title:"II.(2) Nghiệm thu hợp đồng — Dịch vụ không hỗ trợ",
       steps:[
         {num:"01",lbl:"Lập biên bản\nnghiệm thu",title:"Bước 1: Lập biên bản nghiệm thu",units:["Trạm Thủy nông (chủ trì)","Đơn vị sử dụng nước"],text:"Căn cứ nội dung hợp đồng, Trạm Thủy nông phối hợp với đơn vị sử dụng nước lập biên bản nghiệm thu khối lượng cấp nước theo tháng hoặc chu kỳ quy định. Biên bản do Trưởng Trạm ký với đơn vị sử dụng nước trước khi gửi về Công ty."},
-        {num:"02",lbl:"Kiểm tra &\ntrình ký xác nhận",title:"Bước 2: Kiểm tra và trình ký xác nhận nghiệm thu",units:["Phòng KH – KT (chủ trì)","Phòng Tài vụ"],text:"Hồ sơ nghiệm thu gửi về Phòng KH-KT để kiểm tra, sau đó trình Giám đốc hoặc Phó Giám đốc ký xác nhận. Đồng thời cung cấp số liệu cho Phòng Tài vụ xuất hóa đơn theo quy định."}
+        {num:"02",lbl:"Kiểm tra &\ntrình ký xác nhận",title:"Bước 2: Kiểm tra và trình ký xác nhận nghiệm thu",units:["Phòng KH – KT (chủ trì)","Phòng Tài vụ"],text:"Hồ sơ nghiệm thu gửi về Phòng Kế hoạch – Kỹ thuật để kiểm tra, sau đó trình Giám đốc hoặc Phó Giám đốc phụ trách địa bàn ký xác nhận, đồng thời cung cấp số liệu cho Phòng Tài vụ xuất hóa đơn theo quy định."}
       ]
     },
-    { label:"Thanh lý HĐ", icon:"sign", title:"II.3  Thanh lý hợp đồng — Dịch vụ không hỗ trợ",
+    { label:"Thanh lý HĐ", icon:"sign", title:"II.(3) Thanh lý hợp đồng — Dịch vụ không hỗ trợ",
       steps:[
         {num:"01",lbl:"Lập biên bản\nthanh lý HĐ",title:"Bước 1: Lập biên bản thanh lý hợp đồng",units:["Trạm Thủy nông (chủ trì)","Đơn vị sử dụng nước"],text:"Khi kết thúc thời hạn hợp đồng hoặc cuối năm, Trạm Thủy nông phối hợp với đơn vị sử dụng nước lập biên bản thanh lý. Biên bản do Trưởng Trạm ký với đơn vị sử dụng nước trước khi gửi hồ sơ về Công ty."},
         {num:"02",lbl:"Kiểm tra &\ntrình ký xác nhận",title:"Bước 2: Kiểm tra và trình ký xác nhận thanh lý",units:["Phòng KH – KT (chủ trì)"],text:"Hồ sơ thanh lý gửi về Phòng KH-KT để kiểm tra và trình Giám đốc hoặc Phó Giám đốc phụ trách địa bàn ký xác nhận thanh lý hợp đồng theo phân công, ủy quyền của Chủ tịch Công ty."}
@@ -271,8 +297,44 @@ const deadlines = [
   ]
 ];
 
-const STEP_DUR = 10000;
+const BASE_DUR = 10000;
+let speedMult = 1;
+let paused = false;
+let pauseRemaining = 0;
+let pauseStepStart = null;
+
+function getStepDur(){ return BASE_DUR / speedMult; }
+
 let curGroup=0, curFlow=0, cur=0, stepTimer=null, pbTimer=null, pbStart=null;
+
+function setSpeed(s){
+  speedMult = s;
+  document.querySelectorAll('.spd-btn').forEach(el=>{
+    el.classList.toggle('active', parseFloat(el.textContent) === s);
+  });
+  if(!paused){ startAnim(); scheduleNext(); }
+}
+
+function togglePause(){
+  paused = !paused;
+  const btn = document.getElementById('pause-btn');
+  if(paused){
+    btn.innerHTML = '&#9654;';
+    btn.classList.add('paused');
+    clearTimeout(stepTimer); clearInterval(pbTimer);
+    pauseRemaining = getStepDur() - (Date.now() - pbStart);
+  } else {
+    btn.innerHTML = '&#9646;&#9646;';
+    btn.classList.remove('paused');
+    pbStart = Date.now() - (getStepDur() - pauseRemaining);
+    resumeAnim();
+    stepTimer = setTimeout(()=>{
+      const steps = getSteps();
+      cur = cur<steps.length-1 ? cur+1 : 0;
+      renderSteps(); renderDetail(); startAnim(); scheduleNext();
+    }, pauseRemaining);
+  }
+}
 
 function getSteps(){ return groups[curGroup][curFlow].steps; }
 
@@ -306,23 +368,53 @@ function renderSteps(){
 function renderDetail(){
   const steps = getSteps();
   const s = steps[cur];
+  const chuTri = s.units.filter(u => u.includes('chủ trì'));
+  const phiHop = s.units.filter(u => !u.includes('chủ trì'));
+  const unitsHtml = `
+    <div class="d-units-wrap">
+      <div class="d-units-row">
+        <span class="d-units-label">Chủ trì</span>
+        ${chuTri.map(u=>`<span class="d-unit">${u.replace(/\s*\(chủ trì\)/i,'')}</span>`).join('')}
+      </div>
+      ${phiHop.length ? `<div class="d-units-row">
+        <span class="d-units-label">Phối hợp</span>
+        ${phiHop.map(u=>`<span class="d-unit d-unit-ph">${u}</span>`).join('')}
+      </div>` : ''}
+    </div>`;
   document.getElementById('detail').innerHTML =
     `<div class="d-badge">Bước ${cur+1} / ${steps.length}</div>
      <div class="d-title">${s.title}</div>
-     <div class="d-units">${s.units.map(u=>`<span class="d-unit">${u}</span>`).join('')}</div>
+     ${unitsHtml}
      <div class="d-text">${s.text}</div>`;
 }
 
 function startAnim(){
   clearInterval(pbTimer);
+  if(paused) return;
   const track = document.getElementById('track-fill');
   const steps = getSteps(); const total = steps.length;
+  const dur = getStepDur();
   pbStart = Date.now();
   const startPct = total<=1?0:(cur/(total-1))*100;
   const endPct   = total<=1?100:((cur+1)/(total-1))*100;
   const clampEnd = Math.min(endPct,100);
   pbTimer = setInterval(()=>{
-    const ratio = Math.min((Date.now()-pbStart)/STEP_DUR,1);
+    const ratio = Math.min((Date.now()-pbStart)/dur,1);
+    track.style.width = (startPct+(clampEnd-startPct)*ratio)+'%';
+    if(ratio>=1) clearInterval(pbTimer);
+  },30);
+}
+
+function resumeAnim(){
+  clearInterval(pbTimer);
+  const track = document.getElementById('track-fill');
+  const steps = getSteps(); const total = steps.length;
+  const dur = getStepDur();
+  const startPct = total<=1?0:(cur/(total-1))*100;
+  const endPct   = total<=1?100:((cur+1)/(total-1))*100;
+  const clampEnd = Math.min(endPct,100);
+  pbTimer = setInterval(()=>{
+    const ratio = Math.min((Date.now()-pbStart)/dur,1);
     track.style.width = (startPct+(clampEnd-startPct)*ratio)+'%';
     if(ratio>=1) clearInterval(pbTimer);
   },30);
@@ -330,11 +422,12 @@ function startAnim(){
 
 function scheduleNext(){
   clearTimeout(stepTimer);
+  if(paused) return;
   stepTimer = setTimeout(()=>{
     const steps = getSteps();
     cur = cur<steps.length-1 ? cur+1 : 0;
     renderSteps(); renderDetail(); startAnim(); scheduleNext();
-  }, STEP_DUR);
+  }, getStepDur());
 }
 
 function goTo(i){ cur=i; renderSteps(); renderDetail(); startAnim(); scheduleNext(); }
